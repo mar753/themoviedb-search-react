@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Header from './common/Header';
+import TmdSearch from './tmdSearch/TmdSearch';
 
 class App extends Component {
   constructor(){
@@ -11,6 +12,7 @@ class App extends Component {
     return (
       <div>
         <Header title={this.state.title}></Header>
+        <TmdSearch />
       </div>
     );
   }

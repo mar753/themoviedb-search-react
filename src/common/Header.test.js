@@ -9,8 +9,8 @@ it('renders without crashing', () => {
 });
 
 it('should contain title', () => {
-  const header = shallow(
+  const wrapper = shallow(
     <Header title="Test" />
   );
-  expect(header.contains(<h1>Test</h1>)).toBeTruthy();
+  expect(wrapper.contains(<h1>Test</h1>)).toBeTruthy();
 });
