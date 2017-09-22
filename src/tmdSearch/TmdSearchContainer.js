@@ -1,13 +1,83 @@
 import React, { Component } from 'react';
 import TmdSearch from './TmdSearch';
 
+/**
+ * Container component which handles API communication via XMLHttpRequest
+ *
+ * @class
+ */
 class TmdSearchContainer extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      results: null,
+      searchParam: '',
+      adultParam: ''};
+  }
+
   render() {
     return (
       <div>
-        <TmdSearch />
+        <TmdSearch
+          results={this.state.results}
+          getResults={this.getResults.bind(this)} />
       </div>
     );
+  }
+
+  /**
+   * Function to be executed as callback from child component, sends GET request
+   *
+   * @param {Object} data - has values from text input, checkbox and page number
+   */
+  getResults(data) {
+    this.setState({searchParam: data.searchValue ?
+      '&query=' + data.searchValue : this.state.searchParam});
+    this.setState({adultParam: data.adultValue ?
+      '&include_adult=' + data.adultValue : this.state.adultParam});
+
+    const endpoint = 'https://api.themoviedb.org/3/search/movie' + this.addGetParams(data);
+    this.sendAjaxRequest(endpoint);
+  }
+
+  addGetParams(data) {
+    let params = 'api_key=key';
+    params += data.searchValue ?
+      '&query=' + data.searchValue.replace(/ /g, '%20') : this.state.searchParam;
+    params += data.adultValue ?
+      '&include_adult=' + data.adultValue : this.state.adultParam;
+    params += data.page ? '&page=' + data.page : '';
+    params = params.length ? '?' + params : '';
+    return params;
+  }
+
+  sendAjaxRequest(url) {
+    let xhr = new XMLHttpRequest();
+    this.handleOnload(xhr);
+    xhr.onerror = function() {
+      console.error(xhr.statusText)
+    };
+    xhr.open("GET", url, true);
+    xhr.send();
+  }
+
+  handleOnload(xhr) {
+    xhr.onload = () => {
+      if(xhr.status === 200) {
+        this.verifyIfJsonResponse(xhr.responseText);
+      } else {
+        console.error(xhr.statusText);
+      }
+    };
+  }
+
+  verifyIfJsonResponse(response) {
+    try {
+      let results = JSON.parse(response);
+      this.setState({results: results});
+    } catch(e) {
+        console.error(e.toString());
+    }
   }
 }
 

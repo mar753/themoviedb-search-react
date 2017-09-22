@@ -4,6 +4,49 @@ import { shallow } from 'enzyme';
 import TmdSearchContainer from './TmdSearchContainer';
 import TmdSearch from './TmdSearch';
 
+const xhrMock = {
+  open : jest.fn(),
+  send : jest.fn(),
+  readyState: 4,
+  status: 200,
+  responseText: JSON.stringify([
+    { title: 'Matrix' },
+    { rate: '7' }
+  ]),
+  statusText: 'Error'
+};
+const realXMLHttpRequest = window.XMLHttpRequest;
+const fakeXMLHttpRequest = jest.fn(() => xhrMock);
+const realConsoleError = console.error;
+const fakeConsoleError = jest.fn();
+
+function resetXhrMock() {
+  fakeXMLHttpRequest.mockClear();
+  xhrMock.open.mockClear();
+  xhrMock.send.mockClear();
+  xhrMock.readyState = 4;
+  xhrMock.status = 200;
+  xhrMock.responseText = JSON.stringify([{title: 'Matrix'}, {rate: '7'}]);
+  xhrMock.statusText = 'Error';
+}
+
+beforeEach(() => {
+  window.XMLHttpRequest = fakeXMLHttpRequest;
+  console.error = fakeConsoleError;
+});
+
+afterEach(() => {
+  resetXhrMock();
+  window.XMLHttpRequest = realXMLHttpRequest;
+  console.error = realConsoleError;
+});
+
+
+function checkStateExpectatations(wrapper, searchParam, adultParam) {
+  expect(wrapper.instance().state.searchParam).toEqual(searchParam);
+  expect(wrapper.instance().state.adultParam).toEqual(adultParam);
+}
+
 it('renders without crashing', () => {
   const div = document.createElement('div');
   ReactDOM.render(<TmdSearchContainer />, div);
@@ -11,7 +54,71 @@ it('renders without crashing', () => {
 
 it('should contain presentational component', () => {
   const wrapper = shallow(
-    <TmdSearchContainer />
+    <TmdSearchContainer results="" getResults=""/>
   );
-  expect(wrapper.contains(<TmdSearch />)).toBeTruthy();
+  expect(wrapper.find('TmdSearch')).toBeTruthy();
+});
+
+it('should retrieve data without errors', () => {
+  const wrapper = shallow(
+    <TmdSearchContainer results="" getResults=""/>
+  );
+  expect(wrapper.instance().state.results).toBeNull();
+  wrapper.instance().getResults({searchValue: 'value 1'});
+  expect(xhrMock.open).toBeCalledWith(
+    "GET", "https://api.themoviedb.org/3/search/movie?api_key=key&query=value%201", true);
+  expect(xhrMock.send).toBeCalled();
+  xhrMock.onload();
+  expect(wrapper.instance().state.results.toString())
+    .toBe([{ title: 'Matrix' },{ rate: '7' }].toString());
+});
+
+it('should remember the data when called twice', () => {
+  const wrapper = shallow(
+    <TmdSearchContainer results="" getResults=""/>
+  );
+  expect(wrapper.instance().state.searchParam).toEqual('');
+  expect(wrapper.instance().state.adultParam).toEqual('');
+  wrapper.instance().getResults({searchValue: 'value', adultValue: true});
+  checkStateExpectatations(wrapper, '&query=value', '&include_adult=true');
+  xhrMock.onload();
+  wrapper.instance().getResults({});
+  checkStateExpectatations(wrapper, '&query=value', '&include_adult=true');
+  xhrMock.onload();
+  expect(xhrMock.open).toBeCalledWith(
+    "GET", "https://api.themoviedb.org/3/search/movie?api_key=key&query=value&include_adult=true", true)
+  expect(xhrMock.open).toHaveBeenCalledTimes(2);
+  expect(xhrMock.send).toBeCalled();
+  expect(xhrMock.send).toHaveBeenCalledTimes(2);
+  expect(wrapper.instance().state.results.toString())
+    .toBe([{ title: 'Matrix' }, { rate: '7' }].toString());
+});
+
+it('should return error when HTTP status is not 200', () => {
+  const wrapper = shallow(
+    <TmdSearchContainer results="" getResults=""/>
+  );
+  xhrMock.status = 500;
+  expect(wrapper.instance().state.results).toBeNull();
+  wrapper.instance().getResults({searchValue: 'value'});
+  expect(xhrMock.open).toBeCalledWith(
+    "GET", "https://api.themoviedb.org/3/search/movie?api_key=key&query=value", true);
+  expect(xhrMock.send).toBeCalled();
+  xhrMock.onload();
+  expect(fakeConsoleError).toBeCalledWith('Error');
+});
+
+it('should return error when return data cannot be parsed to JSON', () => {
+  const wrapper = shallow(
+    <TmdSearchContainer results="" getResults=""/>
+  );
+  xhrMock.responseText = '<>';
+  expect(wrapper.instance().state.results).toBeNull();
+  wrapper.instance().getResults({searchValue: 'value'});
+  expect(xhrMock.open).toBeCalledWith(
+    "GET", "https://api.themoviedb.org/3/search/movie?api_key=key&query=value", true);
+  expect(xhrMock.send).toBeCalled();
+  xhrMock.onload();
+  expect(fakeConsoleError).toBeCalledWith(
+    'SyntaxError: Unexpected token < in JSON at position 0');
 });
