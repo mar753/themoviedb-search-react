@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import TmdSearch from './TmdSearch';
+import config from './config.json';
 
 /**
  * Container component which handles API communication via XMLHttpRequest
@@ -35,13 +36,11 @@ class TmdSearchContainer extends Component {
       '&query=' + data.searchValue : this.state.searchParam});
     this.setState({adultParam: data.adultValue ?
       '&include_adult=' + data.adultValue : this.state.adultParam});
-
-    const endpoint = 'https://api.themoviedb.org/3/search/movie' + this.addGetParams(data);
-    this.sendAjaxRequest(endpoint);
+    this.sendAjaxRequest(config['api-url'] + this.addGetParams(data));
   }
 
   addGetParams(data) {
-    let params = 'api_key=key';
+    let params = 'api_key=' + config['api-key'];
     params += data.searchValue ?
       '&query=' + data.searchValue.replace(/ /g, '%20') : this.state.searchParam;
     params += data.adultValue ?

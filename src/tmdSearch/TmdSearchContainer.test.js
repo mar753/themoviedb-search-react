@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { shallow } from 'enzyme';
 import TmdSearchContainer from './TmdSearchContainer';
 import TmdSearch from './TmdSearch';
+import config from './config.json';
 
 const xhrMock = {
   open : jest.fn(),
@@ -65,8 +66,8 @@ it('should retrieve data without errors', () => {
   );
   expect(wrapper.instance().state.results).toBeNull();
   wrapper.instance().getResults({searchValue: 'value 1'});
-  expect(xhrMock.open).toBeCalledWith(
-    "GET", "https://api.themoviedb.org/3/search/movie?api_key=key&query=value%201", true);
+  expect(xhrMock.open).toBeCalledWith('GET', config['api-url'] +
+    '?api_key=' + config['api-key'] + '&query=value%201', true);
   expect(xhrMock.send).toBeCalled();
   xhrMock.onload();
   expect(wrapper.instance().state.results.toString())
@@ -85,8 +86,8 @@ it('should remember the data when called twice', () => {
   wrapper.instance().getResults({});
   checkStateExpectatations(wrapper, '&query=value', '&include_adult=true');
   xhrMock.onload();
-  expect(xhrMock.open).toBeCalledWith(
-    "GET", "https://api.themoviedb.org/3/search/movie?api_key=key&query=value&include_adult=true", true)
+  expect(xhrMock.open).toBeCalledWith('GET', config['api-url'] +
+    '?api_key=' + config['api-key'] + '&query=value&include_adult=true', true);
   expect(xhrMock.open).toHaveBeenCalledTimes(2);
   expect(xhrMock.send).toBeCalled();
   expect(xhrMock.send).toHaveBeenCalledTimes(2);
@@ -101,8 +102,8 @@ it('should return error when HTTP status is not 200', () => {
   xhrMock.status = 500;
   expect(wrapper.instance().state.results).toBeNull();
   wrapper.instance().getResults({searchValue: 'value'});
-  expect(xhrMock.open).toBeCalledWith(
-    "GET", "https://api.themoviedb.org/3/search/movie?api_key=key&query=value", true);
+  expect(xhrMock.open).toBeCalledWith('GET', config['api-url'] +
+    '?api_key=' + config['api-key'] + '&query=value', true);
   expect(xhrMock.send).toBeCalled();
   xhrMock.onload();
   expect(fakeConsoleError).toBeCalledWith('Error');
@@ -115,8 +116,8 @@ it('should return error when return data cannot be parsed to JSON', () => {
   xhrMock.responseText = '<>';
   expect(wrapper.instance().state.results).toBeNull();
   wrapper.instance().getResults({searchValue: 'value'});
-  expect(xhrMock.open).toBeCalledWith(
-    "GET", "https://api.themoviedb.org/3/search/movie?api_key=key&query=value", true);
+  expect(xhrMock.open).toBeCalledWith('GET', config['api-url'] +
+    '?api_key=' + config['api-key'] + '&query=value', true);
   expect(xhrMock.send).toBeCalled();
   xhrMock.onload();
   expect(fakeConsoleError).toBeCalledWith(
