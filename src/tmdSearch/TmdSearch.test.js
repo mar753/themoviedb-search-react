@@ -49,3 +49,18 @@ it('should invoke a callback when the form was submitted', () => {
   expect(getResultsMock.mock.calls[0][0].searchValue).toBe('ab');
   expect(wrapper.instance().props['getResults']).toBe(getResultsMock);
 });
+
+it('should contain 2x SearchItem - mocked response provided', () => {
+  const results = { 'results': [
+    {'id':769, 'vote_average':8.2, 'title':'GoodFellas', 'poster_path':'/g.jpg',
+      'adult':false, 'overview':'Lorem ipsum', 'release_date':'1990-09-12'},
+    {'id':550, 'vote_average':8.3, 'title':'Fight Club', 'poster_path':'/f.jpg',
+      'adult':false, 'overview':'Lorem ipsum', 'release_date':'1999-10-15'}]};
+  const wrapper = shallow(
+    <TmdSearch results={results} getResults="" />
+  );
+  expect(wrapper.find('SearchItem').length).toBe(2);
+  expect(wrapper.instance().props.results).toBeTruthy();
+  expect(wrapper.instance().props.results.results[0].title).toBe('GoodFellas');
+  expect(wrapper.instance().props.results.results[1].title).toBe('Fight Club');
+});

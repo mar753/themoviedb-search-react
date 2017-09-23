@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import SearchItem from './searchItem/SearchItem';
 
 const containerStyle = {
   paddingTop: '2em'
@@ -33,35 +34,53 @@ class TmdSearch extends Component {
   }
 
   render() {
+    const textInput = this.renderTextInput();
+    const checkbox = this.renderCheckbox();
     return (
       <div className="container padding" style={containerStyle}>
         <form onSubmit={this.handleSubmit}>
           <div className="row">
             <div className="col-md-5 col-md-offset-3">
-              <input
-                className="form-control"
-                type="text"
-                name="searchValue"
-                value={this.state.searchValue}
-                onChange={this.handleInputChange}
-                placeholder="Enter movie title"
-                required />
-              <div className="checkbox">
-                <label>
-                  <input
-                    type="checkbox"
-                    name="adultValue"
-                    checked={this.state.adultValue}
-                    onChange={this.handleInputChange} />
-                  Display adult movies
-                </label>
-              </div>
+              { textInput }
+              { checkbox }
             </div>
             <div className="col-md-1 text-center">
               <button className="btn btn-primary" type="submit">Search</button>
             </div>
           </div>
         </form>
+        {
+          !!this.props.results &&
+            this.props.results.results.map(m => <SearchItem key={m.id} movie={m} />)
+        }
+      </div>
+    );
+  }
+
+  renderTextInput() {
+    return (
+      <input
+        className="form-control"
+        type="text"
+        name="searchValue"
+        value={this.state.searchValue}
+        onChange={this.handleInputChange}
+        placeholder="Enter movie title"
+        required />
+    );
+  }
+
+  renderCheckbox() {
+    return (
+      <div className="checkbox">
+        <label>
+          <input
+            type="checkbox"
+            name="adultValue"
+            checked={this.state.adultValue}
+            onChange={this.handleInputChange} />
+          Display adult movies
+        </label>
       </div>
     );
   }

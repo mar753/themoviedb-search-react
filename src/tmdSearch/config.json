@@ -1,5 +1,5 @@
 {
   "api-url": "https://api.themoviedb.org/3/search/movie",
   "image-url": "http://image.tmdb.org/t/p/w185",
-  "api-key": "keysss"
+  "api-key": "key"
 }

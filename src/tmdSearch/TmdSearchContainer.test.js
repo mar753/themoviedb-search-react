@@ -109,6 +109,19 @@ it('should return error when HTTP status is not 200', () => {
   expect(fakeConsoleError).toBeCalledWith('Error');
 });
 
+it('should return error when onerror was invoked', () => {
+  const wrapper = shallow(
+    <TmdSearchContainer results="" getResults=""/>
+  );
+  expect(wrapper.instance().state.results).toBeNull();
+  wrapper.instance().getResults({searchValue: 'value'});
+  expect(xhrMock.open).toBeCalledWith('GET', config['api-url'] +
+    '?api_key=' + config['api-key'] + '&query=value', true);
+  expect(xhrMock.send).toBeCalled();
+  xhrMock.onerror();
+  expect(fakeConsoleError).toBeCalledWith('Error');
+});
+
 it('should return error when return data cannot be parsed to JSON', () => {
   const wrapper = shallow(
     <TmdSearchContainer results="" getResults=""/>
