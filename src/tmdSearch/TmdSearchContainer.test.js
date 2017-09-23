@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { shallow } from 'enzyme';
 import TmdSearchContainer from './TmdSearchContainer';
 import TmdSearch from './TmdSearch';
+import Pagination from './pagination/Pagination';
 import config from './config.json';
 
 const xhrMock = {
@@ -55,14 +56,22 @@ it('renders without crashing', () => {
 
 it('should contain presentational component', () => {
   const wrapper = shallow(
-    <TmdSearchContainer results="" getResults=""/>
+    <TmdSearchContainer results="" getResults="" />
   );
-  expect(wrapper.find('TmdSearch')).toBeTruthy();
+  expect(wrapper.find('TmdSearch').exists()).toBeTruthy();
+});
+
+it('should contain paging component when pages > 1', () => {
+  const wrapper = shallow(
+    <TmdSearchContainer results="" getResults="" />
+  );
+  wrapper.instance().setState({results: {page: 1, total_pages: 2}});
+  expect(wrapper.find('Pagination').exists()).toBeTruthy();
 });
 
 it('should retrieve data without errors', () => {
   const wrapper = shallow(
-    <TmdSearchContainer results="" getResults=""/>
+    <TmdSearchContainer results="" getResults="" />
   );
   expect(wrapper.instance().state.results).toBeNull();
   wrapper.instance().getResults({searchValue: 'value 1'});
@@ -76,7 +85,7 @@ it('should retrieve data without errors', () => {
 
 it('should remember the data when called twice', () => {
   const wrapper = shallow(
-    <TmdSearchContainer results="" getResults=""/>
+    <TmdSearchContainer results="" getResults="" />
   );
   expect(wrapper.instance().state.searchParam).toEqual('');
   expect(wrapper.instance().state.adultParam).toEqual('');
@@ -97,7 +106,7 @@ it('should remember the data when called twice', () => {
 
 it('should return error when HTTP status is not 200', () => {
   const wrapper = shallow(
-    <TmdSearchContainer results="" getResults=""/>
+    <TmdSearchContainer results="" getResults="" />
   );
   xhrMock.status = 500;
   expect(wrapper.instance().state.results).toBeNull();
@@ -111,7 +120,7 @@ it('should return error when HTTP status is not 200', () => {
 
 it('should return error when onerror was invoked', () => {
   const wrapper = shallow(
-    <TmdSearchContainer results="" getResults=""/>
+    <TmdSearchContainer results="" getResults="" />
   );
   expect(wrapper.instance().state.results).toBeNull();
   wrapper.instance().getResults({searchValue: 'value'});
@@ -124,7 +133,7 @@ it('should return error when onerror was invoked', () => {
 
 it('should return error when return data cannot be parsed to JSON', () => {
   const wrapper = shallow(
-    <TmdSearchContainer results="" getResults=""/>
+    <TmdSearchContainer results="" getResults="" />
   );
   xhrMock.responseText = '<>';
   expect(wrapper.instance().state.results).toBeNull();

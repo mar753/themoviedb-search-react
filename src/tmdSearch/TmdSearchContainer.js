@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import TmdSearch from './TmdSearch';
+import Pagination from './pagination/Pagination';
 import config from './config.json';
 
 /**
@@ -17,12 +18,20 @@ class TmdSearchContainer extends Component {
   }
 
   render() {
+    const enablePaging = !!this.state.results && !!this.state.results.page
+      && this.state.results.total_pages > 1;
     return (
-      <div>
+      <section>
         <TmdSearch
           results={this.state.results}
           getResults={this.getResults.bind(this)} />
-      </div>
+        {
+          enablePaging &&
+            <Pagination page={this.state.results.page}
+            pages={this.state.results.total_pages}
+            setPage={this.getResults.bind(this)} />
+        }
+      </section>
     );
   }
 
