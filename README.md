@@ -7,15 +7,16 @@ This is a user interface for The Movie Database search API written using React l
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app). JavaScript ES6 is supported. It uses React library version ^15.6.1 with Bootstrap ^3.3.7. Jest with enzyme were used to write unit tests. Usable functions are documented using JSDoc. Application (src/) was divided into several components (besides automatically created - App):
 - common/Header.js - component which displays header
+- common/Header.test.js - unit tests for the Header.js
 - tmdSearch/config.json - API configuration file (enter your API key here)
 - tmdSearch/TmdSearchContainer.js - container component which handles API requests using plain XMLHttpRequest
 - tmdSearch/TmdSearchContainer.test.js - Unit tests for the TmdSearchContainer.js
 - tmdSearch/TmdSearch.js - presentational component which handles form and search results displaying
-- tmdSearch/TmdSearch.test.js - Unit tests for TmdSearch.js
+- tmdSearch/TmdSearch.test.js - Unit tests for the TmdSearch.js
 - tmdSearch/pagination/Pagination.js - component to handle pagination
-- tmdSearch/pagination/Pagination.test.js - Unit tests for Pagination.js
+- tmdSearch/pagination/Pagination.test.js - Unit tests for the Pagination.js
 - tmdSearch/searchItem/SearchItem.js - component presenting one search item of a result
-- tmdSearch/searchItem/SearchItem.test.js - Unit tests for SearchItem.js
+- tmdSearch/searchItem/SearchItem.test.js - Unit tests for the SearchItem.js
 
 ## Installation
 
