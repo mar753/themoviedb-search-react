@@ -1,18 +1,23 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import Header from './common/Header';
+import TmdSearchContainer from './tmdSearch/TmdSearchContainer';
 
+/**
+ * Main application
+ *
+ * @class
+ */
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {title: "The Movie Database Search"}
+  }
+
   render() {
     return (
-      <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
-        </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+      <div>
+        <Header title={this.state.title}></Header>
+        <TmdSearchContainer />
       </div>
     );
   }
