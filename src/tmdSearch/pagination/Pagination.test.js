@@ -27,7 +27,7 @@ it('should render component properly', () => {
     <Pagination page={1} pages={2} />
   );
   expect(wrapper.findWhere(n => n.name() === 'span' && n.text() === '1' &&
-    n.prop('className') === 'font-bold').text()).toBeTruthy();
+    n.prop('className') === 'font-bold').exists()).toBeTruthy();
   expect(wrapper.findWhere(n => n.name() === 'a' && n.text() === '2').exists())
     .toBeTruthy();
 });
@@ -38,14 +38,14 @@ it('should change page from first to second on link click', () => {
     <Pagination page={1} pages={2} setPage={callbackMock} />
   );
   expect(wrapper.findWhere(n => n.name() === 'span' && n.text() === '1' &&
-    n.prop('className') === 'font-bold').text()).toBeTruthy();
+    n.prop('className') === 'font-bold').exists()).toBeTruthy();
   expect(wrapper.findWhere(n => n.name() === 'a' && n.text() === '2').exists())
     .toBeTruthy();
   wrapper.findWhere(n => n.name() === 'a' && n.text() === '2').simulate(
     'click');
-    expect(wrapper.findWhere(n => n.name() === 'span' && n.text() === '2' &&
-      n.prop('className') === 'font-bold').text()).toBeTruthy();
-    expect(wrapper.findWhere(n => n.name() === 'a' && n.text() === '1').exists())
-      .toBeTruthy();
+  expect(wrapper.findWhere(n => n.name() === 'span' && n.text() === '2' &&
+    n.prop('className') === 'font-bold').exists()).toBeTruthy();
+  expect(wrapper.findWhere(n => n.name() === 'a' && n.text() === '1').exists())
+    .toBeTruthy();
   expect(callbackMock).toBeCalledWith({'page': 2});
 });
