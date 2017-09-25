@@ -42,7 +42,7 @@ class SearchItem extends Component {
   renderMovieReleaseDate(movie) {
     return (
         !!movie.release_date &&
-          <span>({movie.release_date.substr(0, 4)})</span>
+          <span> ({movie.release_date.substr(0, 4)})</span>
     );
   }
 
