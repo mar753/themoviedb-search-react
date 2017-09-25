@@ -65,7 +65,7 @@ class TmdSearchContainer extends Component {
     xhr.onerror = function() {
       console.error(xhr.statusText)
     };
-    xhr.open("GET", url, true);
+    xhr.open('GET', url, true);
     xhr.send();
   }
 
