@@ -1,7 +1,7 @@
 # The Movie Database API search UI
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/mar753/themoviedb-search-react/master/LICENSE)
 
-This is a user interface for The Movie Database search API written using React library.
+This is a user interface for The Movie Database search API written using React library. Check out exactly the same project written using Angular framework: https://github.com/mar753/themoviedb-search-angular
 
 ## About the project
 
